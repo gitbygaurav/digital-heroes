@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #0b0b1a;
+  --paper: #f4f0e8;
+  --paper-elevated: #faf8f3;
+  --paper-muted: #e9e3d5;
+  --border-ink: #d5cdbc;
+  --accent: #6ba37a;
+  --accent-deep: #2f5d45;
+  --copper: #c98a4b;
+  --muted-ink: #4f4f5e;
+  --danger: #b91c1c;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-paper-elevated: var(--paper-elevated);
+  --color-paper-muted: var(--paper-muted);
+  --color-border-ink: var(--border-ink);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-copper: var(--copper);
+  --color-muted-ink: var(--muted-ink);
+  --color-danger: var(--danger);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono), var(--font-inter), ui-monospace, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Boutique Industrial focus ring */
+:focus-visible {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
