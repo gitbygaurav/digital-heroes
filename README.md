@@ -53,3 +53,4 @@ npm run build
 - [Database Schema](docs/SCHEMA.md)
 - [Decision Log](docs/DECISIONS.md) (D1–D16 + Phase 1–9 notes; includes D9 note on "Scope / configuration of saved designs")
 - [Sample Race Numbers CSV](public/samples/race-numbers-sample.csv)
+
