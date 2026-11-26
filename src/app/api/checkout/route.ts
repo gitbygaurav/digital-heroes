@@ -151,7 +151,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: oiErr.message }, { status: 500 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const reqOrigin =
+    request.headers.get("origin") ??
+    (request.headers.get("x-forwarded-host")
+      ? `${request.headers.get("x-forwarded-proto") ?? "https"}://${request.headers.get("x-forwarded-host")}`
+      : null);
+  const siteUrl =
+    reqOrigin ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const provider = getPaymentProvider();
 
   try {
