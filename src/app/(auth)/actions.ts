@@ -1,8 +1,21 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+
+async function getSiteUrl(): Promise<string> {
+  const hdrs = await headers();
+  const origin = hdrs.get("origin");
+  if (origin) return origin;
+  const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host");
+  if (host) {
+    const proto = hdrs.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
+    return `${proto}://${host}`;
+  }
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+}
 import {
   forgotPasswordSchema,
   loginSchema,
@@ -76,7 +89,7 @@ export async function signUpAction(
   }
 
   const supabase = await createClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = await getSiteUrl();
 
   // Role is never accepted from client input; DB trigger always sets 'customer' (Decision D16).
   const { data, error } = await supabase.auth.signUp({
@@ -121,7 +134,7 @@ export async function forgotPasswordAction(
   }
 
   const supabase = await createClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = await getSiteUrl();
 
   const { error } = await supabase.auth.resetPasswordForEmail(
     parsed.data.email,
