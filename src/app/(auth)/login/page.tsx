@@ -39,7 +39,10 @@ function LoginForm() {
           role="alert"
           className="mt-4 rounded-md border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger"
         >
-          {state.error ?? "Authentication verification failed. Please try again."}
+          {state.error ??
+            (callbackError === "auth_callback_failed"
+              ? "Authentication verification failed. Please try again."
+              : callbackError)}
         </div>
       )}
 

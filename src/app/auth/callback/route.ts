@@ -4,15 +4,25 @@ import { createClient } from "@/lib/supabase/server";
 
 /**
  * Handles Supabase Auth email verification and password reset callbacks.
- * Supports both PKCE `code` exchange and `token_hash` OTP verification.
+ * Supports PKCE `code`, `token_hash` OTP, and implicit/hash-fragment redirects.
  */
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
+  const authError = searchParams.get("error");
+  const errorDescription = searchParams.get("error_description");
   const next = searchParams.get("next") ?? "/dashboard";
-  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+  const safeNext =
+    next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+
+  if (authError) {
+    const msg = encodeURIComponent(
+      errorDescription ?? "Email verification link expired or invalid."
+    );
+    return NextResponse.redirect(`${origin}/login?error=${msg}`);
+  }
 
   const supabase = await createClient();
 
@@ -31,10 +41,9 @@ export async function GET(request: Request) {
     if (!error) {
       return NextResponse.redirect(`${origin}${safeNext}`);
     }
-    // If PKCE code_verifier cookie is missing (e.g. opened link in another browser),
-    // Supabase has already confirmed the email at /auth/v1/verify — prompt sign-in.
     return NextResponse.redirect(`${origin}/login?verified=1`);
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
+  // Implicit flow (#access_token=...) or direct redirect after /auth/v1/verify
+  return NextResponse.redirect(`${origin}/login?verified=1`);
 }
