@@ -16,6 +16,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "";
   const callbackError = searchParams.get("error");
+  const verified = searchParams.get("verified");
 
   return (
     <div>
@@ -23,6 +24,15 @@ function LoginForm() {
       <p className="mt-1 text-sm text-muted-ink">
         Access your designs, proofs, orders, and one-click reorders.
       </p>
+
+      {verified && (
+        <div
+          role="status"
+          className="mt-4 rounded-md border border-accent-deep/30 bg-accent/15 px-3.5 py-2.5 text-sm text-accent-deep"
+        >
+          Email verified! Please sign in with your email and password.
+        </div>
+      )}
 
       {(state.error || callbackError) && (
         <div
